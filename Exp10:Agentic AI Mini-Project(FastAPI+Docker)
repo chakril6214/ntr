@@ -1,0 +1,32 @@
+# FastAPI Application
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+
+class Query(BaseModel):
+    question: str
+
+
+# Healthcare Agent
+def healthcare_agent(question):
+    if "fever" in question.lower():
+        return "Possible viral infection. Consult a doctor."
+    elif "headache" in question.lower():
+        return "Stay hydrated and take proper rest."
+    elif "cold" in question.lower():
+        return "Drink warm fluids and monitor symptoms."
+    else:
+        return "Please consult a healthcare professional."
+
+
+@app.post("/ask")
+def ask_agent(query: Query):
+    response = healthcare_agent(query.question)
+
+    return {
+        "question": query.question,
+        "response": response
+    }
